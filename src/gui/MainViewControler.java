@@ -45,7 +45,7 @@ public class MainViewControler implements Initializable {
 	}
 	
 	@Override
-	public void initialize(URL uri, ResourceBundle rb) {
+	public void initialize(URL url, ResourceBundle rb) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -8,7 +8,7 @@
 
 <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainViewControler">
    <content>
-      <VBox prefHeight="326.0" prefWidth="513.0">
+      <VBox prefHeight="500.0" prefWidth="500.0">
          <children>
             <MenuBar>
               <menus>
