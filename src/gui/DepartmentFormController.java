@@ -4,7 +4,9 @@ import java.net.URL;
 import java.net.http.WebSocket.Listener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.sound.sampled.LineListener;
 
@@ -23,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exception.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -55,6 +58,13 @@ public class DepartmentFormController implements Initializable {
 	public void setDepartmentService(DepartmentService depService) {
 		this.depService = depService;
 	}
+	
+	public void setErrorMesagers(Map<String, String> errors) {
+		Set<String>filds = errors.keySet();
+		if(filds.contains("name")) {
+			labelErrorName.setText(errors.get("name"));
+		}
+	}
 
 	@FXML
 	public void onButtonSaveAction(ActionEvent event) {
@@ -69,7 +79,11 @@ public class DepartmentFormController implements Initializable {
 			depService.saveOrUpdate(department);
 			notifyDataChengeListeners();
 			Utils.currentStage(event).close(); 
-		} catch (DbException e) {
+		} 
+		catch(ValidationException e) {
+			setErrorMesagers(e.getErrors());
+		}
+		catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -80,8 +94,16 @@ public class DepartmentFormController implements Initializable {
 
 	private Department getFormData() {
 		Department department = new Department();
+		ValidationException exception = new ValidationException("Validation error");
+		
 		department.setId(Utils.tryParseInt(txtId.getText()));
+		if(txtName.getText() == null || txtName.getText().trim()=="") {
+		exception.addError("name", "Fild can't be empty");
+		}
 		department.setName(txtName.getText());
+		if(exception.getErrors().size()>0) {
+			throw exception;
+		}
 		return department;
 	}
 
