@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListViewControler implements Initializable {
+public class DepartmentListViewController implements Initializable {
 	
 	private DepartmentService departmentService;
 	
