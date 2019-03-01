@@ -1,9 +1,17 @@
 package gui;
 
 import java.net.URL;
+import java.net.http.WebSocket.Listener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.sound.sampled.LineListener;
+
+import com.mysql.fabric.xmlrpc.base.Array;
+
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -32,6 +40,13 @@ public class DepartmentFormController implements Initializable {
 	private DepartmentService depService;
 
 	private Department department;
+	
+	List<DataChangeListener> dataChengeListeners = new ArrayList<>();
+	
+	public void subscribeDataChengeListaner(DataChangeListener listener) {
+		dataChengeListeners.add(listener);
+		
+	}
 
 	public void setDepartment(Department department) {
 		this.department = department;
@@ -52,10 +67,15 @@ public class DepartmentFormController implements Initializable {
 		try {
 			department = getFormData();
 			depService.saveOrUpdate(department);
+			notifyDataChengeListeners();
+			Utils.currentStage(event).close(); 
 		} catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
-		Utils.currentStage(event).close(); 
+	}
+
+	private void notifyDataChengeListeners() {
+		dataChengeListeners.forEach(DataChangeListener::onDataChange);	
 	}
 
 	private Department getFormData() {
